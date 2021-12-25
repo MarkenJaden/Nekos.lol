@@ -23,6 +23,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.Urls.Add("http://localhost:5001/");
+
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
