@@ -1,0 +1,10 @@
+﻿@page "/"
+
+<div class="imgbox">
+    <img class="center-fit" src="@NekoClient.Nsfw_v3.Neko().Result.ImageUrl" alt="">
+</div>
+
+@code
+{
+    public NekoClient NekoClient = new("Nekos");
+}
