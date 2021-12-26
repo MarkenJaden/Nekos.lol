@@ -14,6 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\assets\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\assets\fonts\ionicons.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Nekos-Sharp" Version="3.5.0" />
   </ItemGroup>
 
