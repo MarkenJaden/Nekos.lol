@@ -1,4 +1,6 @@
 # Nekos
+[![Deploy to Server](https://github.com/MarkenJaden/Nekos/actions/workflows/deploy.yml/badge.svg)](https://github.com/MarkenJaden/Nekos/actions/workflows/deploy.yml)
+
 Random Neko website using [Nekos.life API](https://github.com/Nekos-life/Nekos-Sharp)
 
 ### https://nekos.lol/
