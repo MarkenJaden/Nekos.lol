@@ -1,5 +1,5 @@
 # Nekos
-Random Neko website using nekos.life API
+Random Neko website using [Nekos.life API](https://github.com/Nekos-life/Nekos-Sharp)
 
 ### https://nekos.lol/
 
