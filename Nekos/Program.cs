@@ -23,7 +23,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.Urls.Add("https://localhost:5100/");
+app.Urls.Add("http://localhost:5100/");
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
