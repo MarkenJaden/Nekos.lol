@@ -1,7 +1,7 @@
 ﻿@page "/"
 @inject IJSRuntime JS
 
-<div class="text-center" tabindex="0" @onkeydown="KeyDown" @ref="Div" style="background: var(--bs-gray-700);">
+<div class="text-center" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700);">
     <img class="img-fluid" src="@ImageUrl" loading="auto" style="box-shadow: 0px 0px 15px 10px;@(mobile ? "max-height: 100vh;" : "height: 100vh;")"><!-- Start: Footer Dark -->
     <footer class="footer-dark">
         <div class="container">
@@ -53,23 +53,90 @@
         switch (e.Key)
         {
             case "ArrowRight":
-                if (History.Last!.Value.Equals(ImageUrl))
+                Next();
+                break;
+            case "ArrowLeft":
+                Previous();
+                break;
+        }
+    }
+
+    private void Next()
+    {
+        if (History.Last!.Value.Equals(ImageUrl))
+        {
+            do
+            {
+                ImageUrl = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
+            } while (History.Contains(ImageUrl));
+            History.AddLast(ImageUrl);
+        }
+        else
+        {
+            ImageUrl = History.Find(ImageUrl)!.Next!.Value;
+        }
+    }
+
+    private void Previous()
+    {
+        var linkedListNode = History.Find(ImageUrl)!.Previous;
+        if (linkedListNode != null) ImageUrl = linkedListNode.Value;
+    }
+
+    //Swipe event
+    (TouchPoint ReferencePoint, DateTime StartTime) startPoint;
+
+    void HandleTouchStart(TouchEventArgs t)
+    {
+        startPoint.ReferencePoint = t.TargetTouches[0];
+        startPoint.StartTime = DateTime.Now;
+    }
+
+    void HandleTouchEnd(TouchEventArgs t)
+    {
+        const double swipeThreshold = 0.8;
+        try
+        {
+            var endReferencePoint = t.ChangedTouches[0];
+
+            var diffX = startPoint.ReferencePoint.ClientX - endReferencePoint.ClientX;
+            var diffY = startPoint.ReferencePoint.ClientY - endReferencePoint.ClientY;
+            var diffTime = DateTime.Now - startPoint.StartTime;
+            var velocityX = Math.Abs(diffX / diffTime.Milliseconds);
+            var velocityY = Math.Abs(diffY / diffTime.Milliseconds);
+
+            if (velocityX < swipeThreshold && velocityY < swipeThreshold) return;
+            if (Math.Abs(velocityX - velocityY) < .5) return;
+            
+            if (velocityX >= swipeThreshold)
+            {
+                if (diffX < 0)
                 {
-                    do
-                    {
-                        ImageUrl = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
-                    } while (History.Contains(ImageUrl));
-                    History.AddLast(ImageUrl);
+                    //Right
+                    Previous();
                 }
                 else
                 {
-                    ImageUrl = History.Find(ImageUrl)!.Next!.Value;
+                    //Left
+                    Next();
                 }
-                break;
-            case "ArrowLeft":
-                var linkedListNode = History.Find(ImageUrl)!.Previous;
-                if (linkedListNode != null) ImageUrl = linkedListNode.Value;
-                break;
+            }
+            //if (velocityY >= swipeThreshold)
+            //{
+            //    if (diffY < 0)
+            //    {
+            //        //Down
+            //    }
+            //    else
+            //    {
+            //        //Up
+            //    }
+            //}
+        }
+
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
         }
     }
 }
