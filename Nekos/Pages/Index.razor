@@ -1,6 +1,8 @@
 ﻿@page "/"
+@inject IJSRuntime JS
 
-<div class="text-center" style="background: var(--bs-gray-700);"><img src="@NekoClient.Nsfw_v3.Neko().Result.ImageUrl" loading="auto" style="box-shadow: 0px 0px 15px 10px;height: 100vh;"><!-- Start: Footer Dark -->
+<div class="text-center" tabindex="0" @onkeydown="KeyDown" @ref="Div" style="background: var(--bs-gray-700);">
+    <img src="@ImageUrl" loading="auto" style="box-shadow: 0px 0px 15px 10px;height: 100vh;"><!-- Start: Footer Dark -->
     <footer class="footer-dark">
         <div class="container">
             <div class="row">
@@ -10,9 +12,58 @@
             <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed.</p><!-- End: Copyright -->
         </div>
     </footer><!-- End: Footer Dark -->
+    @key
 </div>
 
 @code
 {
-    public NekoClient NekoClient = new(Random.Shared.NextInt64().ToString());
+    public string ImageUrl = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
+
+    private NekoClient NekoClient = new(Random.Shared.NextInt64().ToString());
+
+    private LinkedList<string> History = new();
+
+    protected ElementReference Div;  // set by the @ref attribute
+
+    private string key = string.Empty;
+
+    protected override Task OnInitializedAsync()
+    {
+        ImageUrl = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
+        History.AddLast(ImageUrl);
+        return base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("SetFocusToElement", Div);
+        }
+    }
+
+    protected void KeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowRight":
+                if (History.Last!.Value.Equals(ImageUrl))
+                {
+                    do
+                    {
+                        ImageUrl = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
+                    } while (History.Contains(ImageUrl));
+                    History.AddLast(ImageUrl);
+                }
+                else
+                {
+                    ImageUrl = History.Find(ImageUrl)!.Next!.Value;
+                }
+                break;
+            case "ArrowLeft":
+                var linkedListNode = History.Find(ImageUrl)!.Previous;
+                if (linkedListNode != null) ImageUrl = linkedListNode.Value;
+                break;
+        }
+    }
 }
