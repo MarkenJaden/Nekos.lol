@@ -25,23 +25,26 @@
     protected ElementReference Div;  // set by the @ref attribute
 
     private string isDevice { get; set; }
-    private bool mobile { get; set; }
+    private bool mobile { get; set; } = true;
 
     protected override Task OnInitializedAsync()
     {
+
         ImageUrl = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
         History.AddLast(ImageUrl);
-        return base.OnInitializedAsync();
+        return Task.CompletedTask;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JS.InvokeVoidAsync("SetFocusToElement", Div);
-
             mobile = await JS.InvokeAsync<bool>("isDevice");
             isDevice = mobile ? "Mobile" : "Desktop";
+
+            StateHasChanged();
+            
+            await JS.InvokeVoidAsync("SetFocusToElement", Div);
         }
     }
 
