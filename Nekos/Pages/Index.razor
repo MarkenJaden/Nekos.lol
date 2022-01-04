@@ -2,7 +2,14 @@
 @inject IJSRuntime JS
 
 <div class="text-center" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700);">
-    <img class="img-fluid" src="@ImageUrl" style="box-shadow: 0px 0px 15px 10px;@(mobile ? "max-height: 100vh;" : "height: 100vh;")"><!-- Start: Footer Dark -->
+    <img class="img-fluid" src="@ImageUrl" style="box-shadow: 0px 0px 15px 10px;@(mobile ? "max-height: 100vh;" : "height: 100vh;")">
+    
+    <!-- Start: Preload iamges -->
+    <img src="@PreloadImageUrl1" width="0" height="0">
+    <img src="@PreloadImageUrl2" width="0" height="0">
+    <!-- End: Preload iamges -->
+
+    <!-- Start: Footer Dark -->
     <footer class="footer-dark">
         <div class="container">
             <div class="row">
@@ -17,6 +24,8 @@
 @code
 {
     public string ImageUrl = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
+    public string PreloadImageUrl1 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
+    public string PreloadImageUrl2 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
 
     private NekoClient NekoClient = new(Random.Shared.NextInt64().ToString());
 
@@ -31,12 +40,23 @@
     {
 
         ImageUrl = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
+        do
+        {
+            PreloadImageUrl1 = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
+        } while (PreloadImageUrl1.Equals(ImageUrl));
+
+        do
+        {
+            PreloadImageUrl2 = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
+        } while (PreloadImageUrl2.Equals(PreloadImageUrl1) || PreloadImageUrl2.Equals(ImageUrl));
+
         History.AddLast(ImageUrl);
         return Task.CompletedTask;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+
         if (firstRender)
         {
             mobile = await JS.InvokeAsync<bool>("isDevice");
@@ -65,11 +85,14 @@
     {
         if (History.Last!.Value.Equals(ImageUrl))
         {
+            ImageUrl = PreloadImageUrl1;
+            History.AddLast(ImageUrl);
+
+            PreloadImageUrl1 = PreloadImageUrl2;
             do
             {
-                ImageUrl = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
-            } while (History.Contains(ImageUrl));
-            History.AddLast(ImageUrl);
+                PreloadImageUrl2 = NekoClient.Nsfw_v3.Neko().Result.ImageUrl;
+            } while (History.Contains(PreloadImageUrl2) || PreloadImageUrl1.Equals(PreloadImageUrl2));
         }
         else
         {
