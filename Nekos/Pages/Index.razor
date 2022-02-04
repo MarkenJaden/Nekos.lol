@@ -2,16 +2,17 @@
 @inject IJSRuntime _js
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 
-<div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700);">
-    <div id="content-wrapper">
-        <img class="img-fluid" src="@ImageUrl" style="box-shadow: 0px 0px 15px 10px; @(mobile ? "max-height: 100vh;" : "height: 100vh;")">
+<div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700); height: 100vh;">
+    @if (!showFavorites)
+    {
+        <div id="content-wrapper" style="height: 100vh;">
+            <img class="img-fluid" src="@ImageUrl" style="box-shadow: 0px 0px 15px 10px; @(mobile ? "max-height: 100vh;" : "height: 100vh;")">
 
-        <!-- Start: Preload iamges -->
-        <img src="@PreloadImageUrl1" style="width: 0;">
-        <img src="@PreloadImageUrl2" style="width: 0;">
-        @*<img src="@PreloadImageUrl1" width="0" height="0">
-            <img src="@PreloadImageUrl2" width="0" height="0">*@
-        <!-- End: Preload iamges -->
+            <!-- Start: Preload iamges -->
+            <img src="@PreloadImageUrl1" style="width: 0;">
+            <img src="@PreloadImageUrl2" style="width: 0;">
+            <!-- End: Preload iamges -->
+        </div>
         <!-- Start: Footer Dark -->
         <footer class="footer-dark">
             <div class="container">
@@ -21,12 +22,58 @@
                 </div><!-- Start: Copyright -->
                 <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed.</p><!-- End: Copyright -->
             </div>
-        </footer><!-- End: Footer Dark -->
-    </div>
-    @if (!mobile && !keyBoardUsed)
-    {
+        </footer>
+        <!-- End: Footer Dark -->
         <nav class="navbar navbar-light navbar-expand fixed-bottom">
-            <div class="container-fluid"><img class="img-fluid ms-auto" src="assets/img/Keyboard.gif" width="350"></div>
+            <div class="container-fluid">
+                <div class="row mt-auto">
+                    <div class="col">
+                        @if (favorites.Count > 0)
+                        {
+                            <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-right: 10px; height: 56.5px;" @onclick="ToggleFavoriteView"><i class="fas fa-images"></i></button>
+                        }
+                        <button class="btn btn-outline-@(favorites.Contains(ImageUrl) ? "warning" : "light") btn-lg border rounded-circle mt-auto" type="button" style="height: 56.5px;" @onclick="ToggleFavorite"><i class="fa fa-star"></i></button>
+                    </div>
+                </div>
+                @if (!mobile && !keyBoardUsed)
+                {
+                    <img class="img-fluid ms-auto" src="assets/img/Keyboard.gif" width="250">
+                }
+            </div>
+        </nav>
+    }
+    else
+    {
+        <div id="content-wrapper" style="height: 100vh;">
+            <!-- Start: 1 Row 3 Columns -->
+            <div class="container">
+                <div class="row justify-content-center">
+                    @foreach (var img in favorites)
+                    {
+                        <div class="col-md-4" style="margin-bottom: 10px; margin-top: 10px;"><a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a></div>
+                    }
+                </div>
+            </div><!-- End: 1 Row 3 Columns -->
+        </div>
+        <!-- Start: Footer Dark -->
+        <footer class="footer-dark">
+            <div class="container">
+                <div class="row">
+                    <!-- Start: Social Icons -->
+                    <div class="col item social"><a href="https://github.com/MarkenJaden/Nekos" target="_blank"><i class="icon ion-social-github"></i></a></div><!-- End: Social Icons -->
+                </div><!-- Start: Copyright -->
+                <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed.</p><!-- End: Copyright -->
+            </div>
+        </footer>
+        <!-- End: Footer Dark -->
+        <nav class="navbar navbar-light navbar-expand fixed-bottom">
+            <div class="container-fluid">
+                <div class="row mt-auto">
+                    <div class="col">
+                        <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="height: 56.5px;" @onclick="ToggleFavoriteView"><i class="fas fa-images"></i></button>
+                    </div>
+                </div>
+            </div>
         </nav>
     }
 </div>
@@ -46,7 +93,11 @@
     private string isDevice { get; set; } = "Desktop";
     private bool mobile { get; set; } = true;
 
-    private bool keyBoardUsed = false;
+    private bool keyBoardUsed;
+
+    private List<string> favorites = new();
+
+    private bool showFavorites;
 
     protected override Task OnInitializedAsync()
     {
@@ -79,12 +130,14 @@
             await _js.InvokeVoidAsync("SetFocusToElement", Div);
         }
 
-        await _localStorage.SetItemAsync("name", "John Smith");
-        var name = await _localStorage.GetItemAsync<string>("name");
+        if (!await _localStorage.ContainKeyAsync("favorites")) await _localStorage.SetItemAsync("favorites", favorites);
+        favorites = await _localStorage.GetItemAsync<List<string>>("favorites");
+        StateHasChanged();
     }
 
     protected void KeyDown(KeyboardEventArgs e)
     {
+        if(showFavorites) return;
         switch (e.Key)
         {
             case "ArrowRight":
@@ -122,17 +175,42 @@
         if (linkedListNode != null) ImageUrl = linkedListNode.Value;
     }
 
+    private async Task ToggleFavorite()
+    {
+        if (favorites.Contains(ImageUrl)) favorites.Remove(ImageUrl);
+        else favorites.Add(ImageUrl);
+        await _localStorage.SetItemAsync("favorites", favorites);
+        StateHasChanged();
+    }
+
+    private async Task ToggleFavoriteView()
+    {
+        showFavorites = !showFavorites;
+        if (!showFavorites) await _js.InvokeVoidAsync("SetFocusToElement", Div);
+    }
+
+    private void HistoryToFavorite()
+    {
+        History.Clear();
+        foreach (var favorite in favorites)
+        {
+            History.AddLast(favorite);
+        }
+    }
+
     //Swipe event
     (TouchPoint ReferencePoint, DateTime StartTime) startPoint;
 
     void HandleTouchStart(TouchEventArgs t)
     {
+        if(showFavorites) return;
         startPoint.ReferencePoint = t.TargetTouches[0];
         startPoint.StartTime = DateTime.Now;
     }
 
     void HandleTouchEnd(TouchEventArgs t)
     {
+        if(showFavorites) return;
         const double swipeThreshold = 0.4;
         try
         {
