@@ -2,7 +2,7 @@
 @inject IJSRuntime _js
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 
-<div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700); height: 100vh;">
+<div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700); height: auto;">
     @if (!showFavorites)
     {
         <div id="content-wrapper" style="height: 100vh;">
@@ -44,13 +44,30 @@
     }
     else
     {
-        <div id="content-wrapper" style="height: 100vh;">
+        <div id="content-wrapper" style="min-height: 100vh;height: auto;">
             <!-- Start: 1 Row 3 Columns -->
             <div class="container">
                 <div class="row justify-content-center">
-                    @foreach (var img in favorites)
-                    {
-                        <div class="col-md-4" style="margin-bottom: 10px; margin-top: 10px;"><a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a></div>
+                    @{
+                        var chunks = favorites.Chunk(favorites.Count / 3).ToArray();
+                        <div class="col">
+                            @foreach(var img in chunks[0])
+                            {
+                                <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
+                            }
+                        </div>
+                        <div class="col">
+                            @foreach(var img in chunks[1])
+                            {
+                                <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
+                            }
+                        </div>
+                        <div class="col">
+                            @foreach (var img in chunks[2])
+                            {
+                                <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
+                            }
+                        </div>
                     }
                 </div>
             </div><!-- End: 1 Row 3 Columns -->
