@@ -26,7 +26,7 @@ All the logic is done in [Index.razor](https://github.com/MarkenJaden/Nekos/blob
 
 The rest of the application you don't really need to pay attention to, unless you want to add a bigger feature, but with such ambition I assume you have the necessary knowledge.
 
-Once you're happy with your change you can just open a pullrequest, I'll take a quick look over it, and thanks to GitHub Actions your changes are live on the website just a few minutes later, it's really not hard :)
+Once you're happy with your change you can just open a pull request, I'll take a quick look over it, and thanks to GitHub Actions your changes are live on the website just a few minutes later, it's really not hard :)
 
 **If there are any questions you can always reach me via Discord (MarkenJaden#7787) ^^**
 
