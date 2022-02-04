@@ -8,17 +8,17 @@ Website providing you with random lewd nsfw neko pics using [Nekos.life API](htt
 
 ## Developement
 
+#### I appreciate any contribution to the website! If you have an idea, implement it or ask me to do it! ^^
+
 This website was created using [Blazor Server](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) in [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
-Libraries used
+### Libraries used
 * [Nekos-Sharp](https://github.com/Nekos-life/Nekos-Sharp)
 * [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
 
 * [Bootstrap 5.1](https://getbootstrap.com/)
 
-I appreciate any contribution to the website!
-
-For the development you need
+### For the development you need
 * [.NET IDE](https://dotnet.microsoft.com/en-us/platform/tools)
 * [.NET 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
