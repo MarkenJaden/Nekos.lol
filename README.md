@@ -16,8 +16,6 @@ This website was created using [Blazor Server](https://dotnet.microsoft.com/en-u
 * [Nekos-Sharp](https://github.com/Nekos-life/Nekos-Sharp)
 * [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
 
-* [Bootstrap 5.1](https://getbootstrap.com/)
-
 ### For the development you need
 * [.NET IDE](https://dotnet.microsoft.com/en-us/platform/tools)
 * [.NET 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
