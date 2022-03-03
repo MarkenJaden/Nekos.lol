@@ -13,7 +13,7 @@ Website providing you with random lewd nsfw neko pics using [Nekos.life API](htt
 This website was created using [Blazor Server](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) in [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
 ### Libraries used
-* [Nekos-Sharp](https://github.com/Nekos-life/Nekos.Net)
+* [Nekos.Net](https://github.com/Nekos-life/Nekos.Net)
 * [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
 * [CurrieTechnologies.Razor.Clipboard](https://github.com/Basaingeal/Razor.Clipboard)
 * [AntDesign](https://github.com/ant-design-blazor/ant-design-blazor)
