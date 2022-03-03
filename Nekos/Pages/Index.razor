@@ -1,11 +1,10 @@
 ﻿@page "/"
-@using Nekos.Net.V3
-@using Nekos.Net.V3.Endpoints
 @using Nekos.Net.V2
 @using Nekos.Net.V2.Endpoint
-@using Nekos.Net.V2.Responses
+@using CurrieTechnologies.Razor.Clipboard
 @inject IJSRuntime _js
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
+@inject ClipboardService clipboard
 
 <div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700); height: auto;">
     @if (!showFavorites)
@@ -38,6 +37,10 @@
                             <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-right: 10px; height: 56.5px;" @onclick="ToggleFavoriteView"><i class="fas fa-images"></i></button>
                         }
                         <button class="btn btn-outline-@(favorites.Contains(ImageUrl) ? "warning" : "light") btn-lg border rounded-circle mt-auto" type="button" style="height: 56.5px;" @onclick="ToggleFavorite"><i class="fa fa-star"></i></button>
+                        @if(clipboardSupported)
+                        {
+                            <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => await clipboard.WriteTextAsync(ImageUrl)"><i class="far fa-copy"></i></button>
+                        }
                     </div>
                 </div>
                 @if (!mobile && !keyBoardUsed)
@@ -116,6 +119,7 @@
     private bool mobile { get; set; } = true;
 
     private bool keyBoardUsed;
+    private bool clipboardSupported;
 
     private List<string> favorites = new();
 
@@ -146,9 +150,9 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
         if (firstRender)
         {
+            clipboardSupported = await clipboard.IsSupportedAsync();
             mobile = await _js.InvokeAsync<bool>("isDevice");
             isDevice = mobile ? "Mobile" : "Desktop";
 
