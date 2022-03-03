@@ -15,6 +15,8 @@ This website was created using [Blazor Server](https://dotnet.microsoft.com/en-u
 ### Libraries used
 * [Nekos-Sharp](https://github.com/Nekos-life/Nekos.Net)
 * [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
+* [CurrieTechnologies.Razor.Clipboard](https://github.com/Basaingeal/Razor.Clipboard)
+* [AntDesign](https://github.com/ant-design-blazor/ant-design-blazor)
 
 ### For the development you need
 * [.NET IDE](https://dotnet.microsoft.com/en-us/platform/tools)
