@@ -4,7 +4,7 @@
 [![wakatime](https://wakatime.com/badge/github/MarkenJaden/Nekos.svg)](https://wakatime.com/badge/github/MarkenJaden/Nekos)
 
 #### https://nekos.lol/
-Website providing you with random lewd nsfw neko pics using [Nekos.life API](https://github.com/Nekos-life/Nekos-Sharp)
+Website providing you with random lewd nsfw neko pics using [Nekos.life API](https://github.com/Nekos-life/Nekos.Net)
 
 ## Developement
 
@@ -13,7 +13,7 @@ Website providing you with random lewd nsfw neko pics using [Nekos.life API](htt
 This website was created using [Blazor Server](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) in [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
 ### Libraries used
-* [Nekos-Sharp](https://github.com/Nekos-life/Nekos-Sharp)
+* [Nekos-Sharp](https://github.com/Nekos-life/Nekos.Net)
 * [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
 
 ### For the development you need
