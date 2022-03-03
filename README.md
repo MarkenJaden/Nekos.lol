@@ -1,6 +1,6 @@
 # Nekos
 [![Deploy to Server](https://github.com/MarkenJaden/Nekos/actions/workflows/deploy.yml/badge.svg)](https://github.com/MarkenJaden/Nekos/actions/workflows/deploy.yml)
-[![CodeFactor](https://www.codefactor.io/repository/github/markenjaden/nekos/badge)](https://www.codefactor.io/repository/github/markenjaden/nekos)
+[![CodeFactor](https://www.codefactor.io/repository/github/markenjaden/nekos.lol/badge)](https://www.codefactor.io/repository/github/markenjaden/nekos.lol)
 [![wakatime](https://wakatime.com/badge/github/MarkenJaden/Nekos.svg)](https://wakatime.com/badge/github/MarkenJaden/Nekos)
 
 #### https://nekos.lol/
