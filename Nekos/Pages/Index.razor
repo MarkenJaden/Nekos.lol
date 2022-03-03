@@ -123,28 +123,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        try
+        do
         {
-            var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Random);
+            var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
             ImageUrl = t.First().Url;
-            do
-            {
-                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Random);
-                PreloadImageUrl1 = j.First().Url;
-            } while (PreloadImageUrl1.Equals(ImageUrl));
+        } while (ImageUrl == null);
 
-            do
-            {
-                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Random);
-                PreloadImageUrl2 = j.First().Url;
-            } while (PreloadImageUrl2.Equals(PreloadImageUrl1) || PreloadImageUrl2.Equals(ImageUrl));
-
-            History.AddLast(ImageUrl);
-        }
-        catch (Exception e)
+        do
         {
-            Console.WriteLine(e);
-        }
+            var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+            PreloadImageUrl1 = j.First().Url;
+        } while (PreloadImageUrl1 == null || PreloadImageUrl1.Equals(ImageUrl));
+
+        do
+        {
+            var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+            PreloadImageUrl2 = j.First().Url;
+        } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || PreloadImageUrl2.Equals(PreloadImageUrl1) || PreloadImageUrl2.Equals(ImageUrl));
+
+        History.AddLast(ImageUrl);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -188,18 +185,11 @@
             History.AddLast(ImageUrl);
 
             PreloadImageUrl1 = PreloadImageUrl2;
-            try
+            do
             {
-                do
-                {
-                    var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Random);
-                    PreloadImageUrl2 = j.First().Url;
-                } while (History.Contains(PreloadImageUrl2) || PreloadImageUrl1.Equals(PreloadImageUrl2));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+                PreloadImageUrl2 = j.First().Url;
+            } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || History.Contains(PreloadImageUrl2) || PreloadImageUrl1.Equals(PreloadImageUrl2));
         }
         else
         {
