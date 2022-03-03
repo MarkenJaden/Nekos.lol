@@ -10,6 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddClipboard();
+builder.Services.AddAntDesign();
 
 var app = builder.Build();
 

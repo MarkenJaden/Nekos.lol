@@ -5,6 +5,7 @@
 @inject IJSRuntime _js
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 @inject ClipboardService clipboard
+@inject MessageService _message
 
 <div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700); height: auto;">
     @if (!showFavorites)
@@ -39,7 +40,7 @@
                         <button class="btn btn-outline-@(favorites.Contains(ImageUrl) ? "warning" : "light") btn-lg border rounded-circle mt-auto" type="button" style="height: 56.5px;" @onclick="ToggleFavorite"><i class="fa fa-star"></i></button>
                         @if(clipboardSupported)
                         {
-                            <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => await clipboard.WriteTextAsync(ImageUrl)"><i class="far fa-copy"></i></button>
+                            <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => { await clipboard.WriteTextAsync(ImageUrl); await _message.Success(copied); }"><i class="far fa-copy"></i></button>
                         }
                     </div>
                 </div>
@@ -114,6 +115,8 @@
     private LinkedList<string> History = new();
 
     protected ElementReference Div;  // set by the @ref attribute
+
+    private readonly string copied = "Copied image link to clipboard UwU";
 
     private string isDevice { get; set; } = "Desktop";
     private bool mobile { get; set; } = true;
