@@ -34,4 +34,4 @@ Once you're happy with your change you can just open a pull request, I'll take a
 
 ## Legal
 
-I **do not** own or save any of the images displayed. All images are retrieved and displayed using the [Nekos.life API](https://github.com/Nekos-life/Nekos-Sharp).
+I **do not** own or save any of the images displayed. All images are retrieved and displayed using the [Nekos.life API](https://nekos.life/api/v2/endpoints).
