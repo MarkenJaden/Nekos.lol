@@ -189,6 +189,7 @@
         if (History.Last!.Value.Equals(ImageUrl))
         {
             ImageUrl = PreloadImageUrl1;
+            StateHasChanged();
             History.AddLast(ImageUrl);
 
             PreloadImageUrl1 = PreloadImageUrl2;
