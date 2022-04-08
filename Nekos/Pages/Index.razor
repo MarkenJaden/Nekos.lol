@@ -40,7 +40,7 @@
                         <button class="btn btn-outline-@(favorites.Contains(ImageUrl) ? "warning" : "light") btn-lg border rounded-circle mt-auto" type="button" style="height: 56.5px;" @onclick="ToggleFavorite"><i class="fa fa-star"></i></button>
                         @if(clipboardSupported)
                         {
-                            <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => { await clipboard.WriteTextAsync(ImageUrl); await _message.Success(copied); }"><i class="far fa-copy"></i></button>
+                            <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => { await clipboard.WriteTextAsync(ImageUrl); await _message.Success(copied + await GetAsciiNeko()); }"><i class="far fa-copy"></i></button>
                         }
                     </div>
                 </div>
@@ -116,7 +116,7 @@
 
     protected ElementReference Div;  // set by the @ref attribute
 
-    private readonly string copied = "Copied image link to clipboard UwU";
+    private readonly string copied = "Copied image link to clipboard ";
 
     private string isDevice { get; set; } = "Desktop";
     private bool mobile { get; set; } = true;
@@ -291,5 +291,11 @@
         {
             Console.WriteLine(e);
         }
+    }
+
+    private async Task<string> GetAsciiNeko()
+    {
+        var t = await NekoClient.RequestAsciiCatsAsync();
+        return t.First().Cat;
     }
 }
