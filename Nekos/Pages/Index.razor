@@ -208,8 +208,14 @@
         }
     }
 
-    private void Previous()
+    private async void Previous()
     {
+        if (!History.Any())
+        {
+            await _message.Error("Something went wrong! Try again later. It will probably take a few hours.");
+            return;
+        }
+        
         var linkedListNode = History.Find(ImageUrl)!.Previous;
         if (linkedListNode != null) ImageUrl = linkedListNode.Value;
     }
