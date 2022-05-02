@@ -128,29 +128,6 @@
 
     private bool showFavorites;
 
-    protected override async Task OnInitializedAsync()
-    {
-        do
-        {
-            var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
-            ImageUrl = t.First().Url;
-        } while (ImageUrl == null);
-
-        do
-        {
-            var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
-            PreloadImageUrl1 = j.First().Url;
-        } while (PreloadImageUrl1 == null || PreloadImageUrl1.Equals(ImageUrl));
-
-        do
-        {
-            var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
-            PreloadImageUrl2 = j.First().Url;
-        } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || PreloadImageUrl2.Equals(PreloadImageUrl1) || PreloadImageUrl2.Equals(ImageUrl));
-
-        History.AddLast(ImageUrl);
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -160,6 +137,26 @@
             isDevice = mobile ? "Mobile" : "Desktop";
 
             StateHasChanged();
+            
+            do
+            {
+                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+                ImageUrl = t.First().Url;
+            } while (ImageUrl == null);
+
+            do
+            {
+                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+                PreloadImageUrl1 = j.First().Url;
+            } while (PreloadImageUrl1 == null || PreloadImageUrl1.Equals(ImageUrl));
+
+            do
+            {
+                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+                PreloadImageUrl2 = j.First().Url;
+            } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || PreloadImageUrl2.Equals(PreloadImageUrl1) || PreloadImageUrl2.Equals(ImageUrl));
+
+            History.AddLast(ImageUrl);
 
             await _js.InvokeVoidAsync("SetFocusToElement", Div);
         }
@@ -186,6 +183,12 @@
 
     private async void Next()
     {
+        if (!History.Any())
+        {
+            await _message.Error("Something went wrong! Try again later. It will probably take a few hours.");
+            return;
+        }
+        
         if (History.Last!.Value.Equals(ImageUrl))
         {
             ImageUrl = PreloadImageUrl1;

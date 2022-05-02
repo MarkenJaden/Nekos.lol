@@ -28,8 +28,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.Urls.Add("http://localhost:5100/");
+
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-if (app.Environment.IsDevelopment()) app.Run();
-else app.Run("http://localhost:5100/");
+app.Run();
