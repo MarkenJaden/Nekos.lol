@@ -4,7 +4,7 @@
 [![wakatime](https://wakatime.com/badge/github/MarkenJaden/Nekos.svg)](https://wakatime.com/badge/github/MarkenJaden/Nekos)
 
 #### https://nekos.lol/
-Website providing you with random lewd nsfw neko pics using [Nekos.life API](https://github.com/Nekos-life/Nekos.Net)
+Website providing you with random lewd nsfw neko pics using [Neko-Love API](https://neko-love.xyz/)
 
 ## Developement
 
@@ -13,7 +13,7 @@ Website providing you with random lewd nsfw neko pics using [Nekos.life API](htt
 This website was created using [Blazor Server](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) in [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
 ### Libraries used
-* [Nekos.Net](https://github.com/Nekos-life/Nekos.Net)
+* [Neko-Love.Net](https://github.com/MarkenJaden/Neko-Love.Net)
 * [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
 * [CurrieTechnologies.Razor.Clipboard](https://github.com/Basaingeal/Razor.Clipboard)
 * [AntDesign](https://github.com/ant-design-blazor/ant-design-blazor)
@@ -34,4 +34,4 @@ Once you're happy with your change you can just open a pull request, I'll take a
 
 ## Legal
 
-I **do not** own or save any of the images displayed. All images are retrieved and displayed using the [Nekos.life API](https://nekos.life/api/v2/endpoints).
+I **do not** own or save any of the images displayed. All images are retrieved and displayed using the [Neko-Love API](https://neko-love.xyz/api/v1/).
