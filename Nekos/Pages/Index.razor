@@ -1,7 +1,7 @@
 ﻿@page "/"
-@using Nekos.Net.V2
-@using Nekos.Net.V2.Endpoint
 @using CurrieTechnologies.Razor.Clipboard
+@using Neko_Love.Net.V1
+@using Neko_Love.Net.V1.Endpoints
 @inject IJSRuntime _js
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 @inject ClipboardService clipboard
@@ -110,7 +110,7 @@
     public string PreloadImageUrl1 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
     public string PreloadImageUrl2 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
 
-    private NekosV2Client NekoClient = new();
+    private NekoV1Client NekoClient = new();
 
     private LinkedList<string> History = new();
 
@@ -140,19 +140,19 @@
             
             do
             {
-                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Nekolewd);
                 ImageUrl = t.First().Url;
             } while (ImageUrl == null);
 
             do
             {
-                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Nekolewd);
                 PreloadImageUrl1 = j.First().Url;
             } while (PreloadImageUrl1 == null || PreloadImageUrl1.Equals(ImageUrl));
 
             do
             {
-                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Nekolewd);
                 PreloadImageUrl2 = j.First().Url;
             } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || PreloadImageUrl2.Equals(PreloadImageUrl1) || PreloadImageUrl2.Equals(ImageUrl));
 
@@ -198,7 +198,7 @@
             PreloadImageUrl1 = PreloadImageUrl2;
             do
             {
-                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Lewd);
+                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Nekolewd);
                 PreloadImageUrl2 = j.First().Url;
             } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || History.Contains(PreloadImageUrl2) || PreloadImageUrl1.Equals(PreloadImageUrl2));
         }
@@ -304,7 +304,8 @@
 
     private async Task<string> GetAsciiNeko()
     {
-        var t = await NekoClient.RequestAsciiCatsAsync();
-        return t.First().Cat;
+        //var t = await NekoClient.RequestAsciiCatsAsync();
+        //return t.First().Cat;
+        return "UwU";
     }
 }
