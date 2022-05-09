@@ -1,7 +1,7 @@
 ﻿@page "/"
 @using CurrieTechnologies.Razor.Clipboard
-@using Neko_Love.Net.V1
-@using Neko_Love.Net.V1.Endpoints
+@using Nekos.Fun.NET.V1
+@using Nekos.Fun.NET.V1.Endpoints
 @inject IJSRuntime _js
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 @inject ClipboardService clipboard
@@ -140,20 +140,20 @@
             
             do
             {
-                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Nekolewd);
+                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.spank);
                 ImageUrl = t.First().Url;
             } while (ImageUrl == null);
 
             do
             {
-                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Nekolewd);
-                PreloadImageUrl1 = j.First().Url;
+                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.lewd);
+                PreloadImageUrl1 = t.First().Url;
             } while (PreloadImageUrl1 == null || PreloadImageUrl1.Equals(ImageUrl));
 
             do
             {
-                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Nekolewd);
-                PreloadImageUrl2 = j.First().Url;
+                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.lewd);
+                PreloadImageUrl2 = t.First().Url;
             } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || PreloadImageUrl2.Equals(PreloadImageUrl1) || PreloadImageUrl2.Equals(ImageUrl));
 
             History.AddLast(ImageUrl);
@@ -198,8 +198,8 @@
             PreloadImageUrl1 = PreloadImageUrl2;
             do
             {
-                var j = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.Nekolewd);
-                PreloadImageUrl2 = j.First().Url;
+                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.lewd);
+                PreloadImageUrl2 = t.First().Url;
             } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || History.Contains(PreloadImageUrl2) || PreloadImageUrl1.Equals(PreloadImageUrl2));
         }
         else
