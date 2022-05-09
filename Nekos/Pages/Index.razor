@@ -140,7 +140,7 @@
             
             do
             {
-                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.spank);
+                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.lewd);
                 ImageUrl = t.First().Url;
             } while (ImageUrl == null);
 
