@@ -1,7 +1,7 @@
 # Nekos
 [![Deploy to Server](https://github.com/MarkenJaden/Nekos/actions/workflows/deploy.yml/badge.svg)](https://github.com/MarkenJaden/Nekos/actions/workflows/deploy.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/markenjaden/nekos.lol/badge)](https://www.codefactor.io/repository/github/markenjaden/nekos.lol)
-[![wakatime](https://wakatime.com/badge/github/MarkenJaden/Nekos.lol.svg)](https://wakatime.com/badge/github/MarkenJaden/Nekos.lol)
+[![wakatime](https://wakatime.com/badge/user/17f322c9-222a-48b4-9e15-983c41f7aed4/project/d3a3b200-4514-4fa7-a958-9f5914af1406.svg)](https://wakatime.com/badge/user/17f322c9-222a-48b4-9e15-983c41f7aed4/project/d3a3b200-4514-4fa7-a958-9f5914af1406)
 
 #### https://nekos.lol/
 Website providing you with random lewd nsfw neko pics using [Nekos.Fun API](https://github.com/MarkenJaden/Nekos.Fun.NET)
