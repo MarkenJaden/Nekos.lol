@@ -1,10 +1,10 @@
 # Nekos
 [![Deploy to Server](https://github.com/MarkenJaden/Nekos/actions/workflows/deploy.yml/badge.svg)](https://github.com/MarkenJaden/Nekos/actions/workflows/deploy.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/markenjaden/nekos.lol/badge)](https://www.codefactor.io/repository/github/markenjaden/nekos.lol)
-[![wakatime](https://wakatime.com/badge/github/MarkenJaden/Nekos.svg)](https://wakatime.com/badge/github/MarkenJaden/Nekos)
+[![wakatime](https://wakatime.com/badge/user/17f322c9-222a-48b4-9e15-983c41f7aed4/project/d3a3b200-4514-4fa7-a958-9f5914af1406.svg)](https://wakatime.com/badge/user/17f322c9-222a-48b4-9e15-983c41f7aed4/project/d3a3b200-4514-4fa7-a958-9f5914af1406)
 
 #### https://nekos.lol/
-Website providing you with random lewd nsfw neko pics using [Neko-Love API](https://neko-love.xyz/)
+Website providing you with random lewd nsfw neko pics using [Nekos.Fun API](https://github.com/MarkenJaden/Nekos.Fun.NET)
 
 ## Developement
 
@@ -13,7 +13,7 @@ Website providing you with random lewd nsfw neko pics using [Neko-Love API](http
 This website was created using [Blazor Server](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) in [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
 ### Libraries used
-* [Neko-Love.Net](https://github.com/MarkenJaden/Neko-Love.Net)
+* [Nekos.Fun.NET](https://github.com/MarkenJaden/Nekos.Fun.NET)
 * [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
 * [CurrieTechnologies.Razor.Clipboard](https://github.com/Basaingeal/Razor.Clipboard)
 * [AntDesign](https://github.com/ant-design-blazor/ant-design-blazor)
@@ -34,4 +34,4 @@ Once you're happy with your change you can just open a pull request, I'll take a
 
 ## Legal
 
-I **do not** own or save any of the images displayed. All images are retrieved and displayed using the [Neko-Love API](https://neko-love.xyz/api/v1/).
+I **do not** own or save any of the images displayed. All images are retrieved and displayed using the [Nekos.Fun API](https://nekos.fun/).
