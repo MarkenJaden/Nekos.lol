@@ -27,9 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AntDesign" Version="0.12.6" />
-    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
-    <PackageReference Include="CurrieTechnologies.Razor.Clipboard" Version="1.4.0" />
+    <PackageReference Include="AntDesign" Version="0.14.2" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+    <PackageReference Include="CurrieTechnologies.Razor.Clipboard" Version="1.6.0" />
     <PackageReference Include="Nekos.Fun.NET" Version="1.2.0" />
   </ItemGroup>
 
