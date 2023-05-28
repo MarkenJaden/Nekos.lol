@@ -106,27 +106,56 @@
 
 @code
 {
+    /// <summary>
+    /// The URL of the main image displayed on the page
+    /// </summary>
     public string ImageUrl = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
+
+    /// <summary>
+    /// The URL of a pre-loaded image displayed on the page
+    /// </summary>
     public string PreloadImageUrl1 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
+
+    /// <summary>
+    /// The URL of a second pre-loaded image displayed on the page
+    /// </summary>
     public string PreloadImageUrl2 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
 
     private NekoV1Client NekoClient = new();
 
     private LinkedList<string> History = new();
 
+    /// <summary>
+    /// The reference to the HTML element that contains the image
+    /// </summary>
     protected ElementReference Div;  // set by the @ref attribute
 
     private readonly string copied = "Copied image link to clipboard ";
 
+    /// <summary>
+    /// A string indicating the type of device used to access the page (e.g. "Desktop", "Mobile")
+    /// </summary>
     private string isDevice { get; set; } = "Desktop";
+
+    /// <summary>
+    /// A boolean indicating whether the page is being accessed on a mobile device
+    /// </summary>
     private bool mobile { get; set; } = true;
 
     private bool keyBoardUsed;
+
     private bool clipboardSupported;
 
+    /// <summary>
+    /// A list of image links that the user has marked as favorites
+    /// </summary>
     private List<string> favorites = new();
 
+    /// <summary>
+    /// A boolean indicating whether the "favorites" section of the page should be displayed
+    /// </summary>
     private bool showFavorites;
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -166,6 +195,10 @@
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Handles keyboard events for navigating between items in a collection.
+    /// </summary>
+    /// <param name="e">The keyboard event arguments.</param>
     protected void KeyDown(KeyboardEventArgs e)
     {
         if (showFavorites) return;
@@ -181,6 +214,9 @@
         }
     }
 
+    /// <summary>
+    /// Moves to the next image in the collection, or loads a new one if none are available.
+    /// </summary>
     private async void Next()
     {
         if (!History.Any())
