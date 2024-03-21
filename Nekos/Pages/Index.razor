@@ -1,7 +1,6 @@
 ﻿@page "/"
 @using CurrieTechnologies.Razor.Clipboard
-@using Nekos.Fun.NET.V1
-@using Nekos.Fun.NET.V1.Endpoints
+@using NekosAPI.NET.V3
 @inject IJSRuntime _js
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 @inject ClipboardService clipboard
@@ -121,9 +120,9 @@
     /// </summary>
     public string PreloadImageUrl2 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
 
-    private NekoV1Client NekoClient = new();
+    private RandomNekoClient NekoClient = new(new HttpClient());
 
-    private LinkedList<string> History = new();
+    private LinkedList<string> History = [];
 
     /// <summary>
     /// The reference to the HTML element that contains the image
@@ -149,7 +148,7 @@
     /// <summary>
     /// A list of image links that the user has marked as favorites
     /// </summary>
-    private List<string> favorites = new();
+    private List<string>? favorites = [];
 
     /// <summary>
     /// A boolean indicating whether the "favorites" section of the page should be displayed
@@ -167,23 +166,10 @@
 
             StateHasChanged();
             
-            do
-            {
-                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.lewd);
-                ImageUrl = t.First().Url;
-            } while (ImageUrl == null);
-
-            do
-            {
-                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.lewd);
-                PreloadImageUrl1 = t.First().Url;
-            } while (PreloadImageUrl1 == null || PreloadImageUrl1.Equals(ImageUrl));
-
-            do
-            {
-                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.lewd);
-                PreloadImageUrl2 = t.First().Url;
-            } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || PreloadImageUrl2.Equals(PreloadImageUrl1) || PreloadImageUrl2.Equals(ImageUrl));
+            var images = await NekoClient.ImagesAsync(rating: ["explicit"], tag: [8], limit: 3);
+            ImageUrl = images.Items.ElementAt(0).Image_url;
+            PreloadImageUrl1 = images.Items.ElementAt(1).Image_url;
+            PreloadImageUrl2 = images.Items.ElementAt(2).Image_url;
 
             History.AddLast(ImageUrl);
 
@@ -234,9 +220,9 @@
             PreloadImageUrl1 = PreloadImageUrl2;
             do
             {
-                var t = await NekoClient.RequestNsfwResultsAsync(NsfwEndpoint.lewd);
-                PreloadImageUrl2 = t.First().Url;
-            } while (PreloadImageUrl1 == null || PreloadImageUrl2 == null || History.Contains(PreloadImageUrl2) || PreloadImageUrl1.Equals(PreloadImageUrl2));
+                var t = await NekoClient.ImagesAsync(rating: ["explicit"], tag: [8], limit: 1);
+                PreloadImageUrl2 = t.Items.First().Image_url;
+            } while (PreloadImageUrl1 == null || History.Contains(PreloadImageUrl2) || PreloadImageUrl1.Equals(PreloadImageUrl2));
         }
         else
         {
@@ -338,10 +324,10 @@
         }
     }
 
-    private async Task<string> GetAsciiNeko()
+    private static Task<string> GetAsciiNeko()
     {
         //var t = await NekoClient.RequestAsciiCatsAsync();
         //return t.First().Cat;
-        return "UwU";
+        return Task.FromResult("UwU");
     }
 }
