@@ -13,19 +13,19 @@
             <img class="img-fluid" src="@ImageUrl" style="box-shadow: 0px 0px 15px 10px; @(mobile ? "max-height: 100vh;" : "height: 100vh;")">
 
             <!-- Start: Preload iamges -->
-        <img src="@PreloadImageUrl1" style="width: 0;">
+            <img src="@PreloadImageUrl1" style="width: 0;">
             <img src="@PreloadImageUrl2" style="width: 0;">
             <!-- End: Preload iamges -->
-    </div>
+        </div>
         <!-- Start: Footer Dark -->
         <footer class="footer-dark">
             <div class="container">
                 <div class="row">
                     <!-- Start: Social Icons -->
-                <div class="col item social"><a href="https://github.com/MarkenJaden/Nekos" target="_blank"><i class="icon ion-social-github"></i></a></div><!-- End: Social Icons -->
-            </div><!-- Start: Copyright -->
-            <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed.</p><!-- End: Copyright -->
-        </div>
+                    <div class="col item social"><a href="https://github.com/MarkenJaden/Nekos" target="_blank"><i class="icon ion-social-github"></i></a></div><!-- End: Social Icons -->
+                </div><!-- Start: Copyright -->
+                <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed.</p><!-- End: Copyright -->
+            </div>
         </footer>
         <!-- End: Footer Dark -->
         <nav class="navbar navbar-light navbar-expand fixed-bottom">
@@ -37,7 +37,7 @@
                             <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-right: 10px; height: 56.5px;" @onclick="ToggleFavoriteView"><i class="fas fa-images"></i></button>
                         }
                         <button class="btn btn-outline-@(favorites.Contains(ImageUrl) ? "warning" : "light") btn-lg border rounded-circle mt-auto" type="button" style="height: 56.5px;" @onclick="ToggleFavorite"><i class="fa fa-star"></i></button>
-                        @if(clipboardSupported)
+                        @if (clipboardSupported)
                         {
                             <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => { await clipboard.WriteTextAsync(ImageUrl); await _message.Success(copied + await GetAsciiNeko()); }"><i class="far fa-copy"></i></button>
                         }
@@ -54,41 +54,51 @@
     {
         <div id="content-wrapper" style="min-height: 100vh;height: auto;">
             <!-- Start: 1 Row 3 Columns -->
-        <div class="container">
+            <div class="container">
                 <div class="row justify-content-center">
                     @{
-                        var chunks = favorites.Chunk(favorites.Count / 3).ToArray();
-                        <div class="col">
-                            @foreach (var img in chunks[0])
+                        if (favorites.Count >= 3)
+                        {
+                            var chunks = favorites.Chunk(favorites.Count / 3).ToArray();
+                            <div class="col">
+                                @foreach (var img in chunks[0])
+                                {
+                                    <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
+                                }
+                            </div>
+                            <div class="col">
+                                @foreach (var img in chunks[1])
+                                {
+                                    <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
+                                }
+                            </div>
+                            <div class="col">
+                                @foreach (var img in chunks[2])
+                                {
+                                    <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var img in favorites)
                             {
                                 <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
                             }
-                        </div>
-                        <div class="col">
-                            @foreach (var img in chunks[1])
-                            {
-                                <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
-                            }
-                        </div>
-                        <div class="col">
-                            @foreach (var img in chunks[2])
-                            {
-                                <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
-                            }
-                        </div>
+                        }
                     }
                 </div>
             </div><!-- End: 1 Row 3 Columns -->
-    </div>
+        </div>
         <!-- Start: Footer Dark -->
         <footer class="footer-dark">
             <div class="container">
                 <div class="row">
                     <!-- Start: Social Icons -->
-                <div class="col item social"><a href="https://github.com/MarkenJaden/Nekos" target="_blank"><i class="icon ion-social-github"></i></a></div><!-- End: Social Icons -->
-            </div><!-- Start: Copyright -->
-            <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed. Favorites are saved as link as cookie in local storage. API used: https://nekosapi.com/</p><!-- End: Copyright -->
-        </div>
+                    <div class="col item social"><a href="https://github.com/MarkenJaden/Nekos" target="_blank"><i class="icon ion-social-github"></i></a></div><!-- End: Social Icons -->
+                </div><!-- Start: Copyright -->
+                <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed. Favorites are saved as link as cookie in local storage. API used: https://nekosapi.com/</p><!-- End: Copyright -->
+            </div>
         </footer>
         <!-- End: Footer Dark -->
         <nav class="navbar navbar-light navbar-expand fixed-bottom">
@@ -165,7 +175,7 @@
             isDevice = mobile ? "Mobile" : "Desktop";
 
             StateHasChanged();
-            
+
             var images = await NekoClient.ImagesAsync(rating: ["explicit"], tag: [8], limit: 3);
             ImageUrl = images.Items.ElementAt(0).Image_url;
             PreloadImageUrl1 = images.Items.ElementAt(1).Image_url;
@@ -210,7 +220,7 @@
             await _message.Error("Something went wrong! Try again later. It will probably take a few hours.");
             return;
         }
-        
+
         if (History.Last!.Value.Equals(ImageUrl))
         {
             ImageUrl = PreloadImageUrl1;
@@ -237,7 +247,7 @@
             await _message.Error("Something went wrong! Try again later. It will probably take a few hours.");
             return;
         }
-        
+
         var linkedListNode = History.Find(ImageUrl)!.Previous;
         if (linkedListNode != null) ImageUrl = linkedListNode.Value;
     }
