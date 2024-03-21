@@ -30,9 +30,9 @@ jobs:
           known_hosts: ${{ secrets.SSH_HOST }}
         
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.100
+          dotnet-version: '8.0.x'
       - name: Install dependencies
         run: dotnet restore
       - name: Build
