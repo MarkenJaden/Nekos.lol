@@ -194,12 +194,8 @@
     private async Task LoadImages()
     {
         await _console.LogAsync("Loading new images in queue...");
-        var images = await _nekoClient.ImagesAsync(rating: ["explicit"], tag: [8], limit: 25);
-        foreach (var image in images.Items)
-        {
-            if (!_images.Any(x => x.Id.Equals(image.Id)))
-                _images.AddLast(image);
-        }
+        var images = await _nekoClient.ImagesAsync(rating: ["explicit"], tag: [8], limit: 25, is_screenshot:false);
+        foreach (var image in images.Items) if (!_images.Any(x => x.Id.Equals(image.Id))) _images.AddLast(image);
         await _console.LogAsync("Image loading finished.");
     }
 
