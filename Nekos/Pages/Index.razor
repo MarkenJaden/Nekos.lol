@@ -1,51 +1,43 @@
 ﻿@page "/"
 @using CurrieTechnologies.Razor.Clipboard
+@using Nekos.Utils
 @using NekosAPI.NET.V3
-@inject IJSRuntime _js
-@inject Blazored.LocalStorage.ILocalStorageService _localStorage
-@inject ClipboardService clipboard
-@inject MessageService _message
+@inject IJSRuntime Js
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject ClipboardService Clipboard
+@inject MessageService Message
 
 <div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700); height: auto;">
-    @if (!showFavorites)
+    @if (!_showFavorites)
     {
         <div id="content-wrapper" style="height: 100vh;">
-            <img class="img-fluid" src="@ImageUrl" style="box-shadow: 0px 0px 15px 10px; @(mobile ? "max-height: 100vh;" : "height: 100vh;")">
+            <img class="img-fluid" src="@(Image != null ? Image.Value.Image_url : "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif")" style="box-shadow: 0px 0px 15px 10px; @(Mobile ? "max-height: 100vh;" : "height: 100vh;")" alt="Neko image">
 
-            <!-- Start: Preload iamges -->
-            <img src="@PreloadImageUrl1" style="width: 0;">
-            <img src="@PreloadImageUrl2" style="width: 0;">
-            <!-- End: Preload iamges -->
+            <!-- Start: Preload images -->
+            @* ReSharper disable once MissingAltAttributeInImgTag *@
+            <img src="@PreloadImageUrl1?.Value.Image_url" style="width: 0;">
+            @* ReSharper disable once MissingAltAttributeInImgTag *@
+            <img src="@PreloadImageUrl2?.Value.Image_url" style="width: 0;">
+            <!-- End: Preload images -->
         </div>
-        <!-- Start: Footer Dark -->
-        <footer class="footer-dark">
-            <div class="container">
-                <div class="row">
-                    <!-- Start: Social Icons -->
-                    <div class="col item social"><a href="https://github.com/MarkenJaden/Nekos" target="_blank"><i class="icon ion-social-github"></i></a></div><!-- End: Social Icons -->
-                </div><!-- Start: Copyright -->
-                <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed.</p><!-- End: Copyright -->
-            </div>
-        </footer>
-        <!-- End: Footer Dark -->
         <nav class="navbar navbar-light navbar-expand fixed-bottom">
             <div class="container-fluid">
                 <div class="row mt-auto">
                     <div class="col">
-                        @if (favorites.Count > 0)
+                        @if (_favorites is { Count: > 0 })
                         {
                             <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-right: 10px; height: 56.5px;" @onclick="ToggleFavoriteView"><i class="fas fa-images"></i></button>
                         }
-                        <button class="btn btn-outline-@(favorites.Contains(ImageUrl) ? "warning" : "light") btn-lg border rounded-circle mt-auto" type="button" style="height: 56.5px;" @onclick="ToggleFavorite"><i class="fa fa-star"></i></button>
-                        @if (clipboardSupported)
+                        <button class="btn btn-outline-@(_favorites != null && _favorites.Exists(x => Image != null && x.Id.Equals(Image.Value.Id)) ? "warning" : "light") btn-lg border rounded-circle mt-auto" type="button" style="height: 56.5px;" @onclick="ToggleFavorite"><i class="fa fa-star"></i></button>
+                        @if (_clipboardSupported)
                         {
-                            <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => { await clipboard.WriteTextAsync(ImageUrl); await _message.Success(copied + await GetAsciiNeko()); }"><i class="far fa-copy"></i></button>
+                            <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => { if (Image != null) await Clipboard.WriteTextAsync(Image.Value.Image_url); await Message.Success(Copied + await GetAsciiNeko()); }"><i class="far fa-copy"></i></button>
                         }
                     </div>
                 </div>
-                @if (!mobile && !keyBoardUsed)
+                @if (!Mobile && !_keyBoardUsed)
                 {
-                    <img class="img-fluid ms-auto" src="assets/img/Keyboard.gif" width="250">
+                    <img class="img-fluid ms-auto" src="assets/img/Keyboard.gif" width="250" alt="Use arrow keys GIF">
                 }
             </div>
         </nav>
@@ -57,50 +49,20 @@
             <div class="container">
                 <div class="row justify-content-center">
                     @{
-                        if (favorites.Count >= 3)
+                        var chunks = _favorites!.Chunk(_favorites!.Count / _favorites.Count > 3 ? 3 : _favorites.Count).ToArray();
+                        @foreach (var chunk in chunks)
                         {
-                            var chunks = favorites.Chunk(favorites.Count / 3).ToArray();
                             <div class="col">
-                                @foreach (var img in chunks[0])
+                                @foreach (var img in chunk)
                                 {
-                                    <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
+                                    <a href="" @onclick="() => { HistoryToFavorite(img); ToggleFavoriteView(); }"><img class="img-fluid" src="@img.Image_url" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
                                 }
                             </div>
-                            <div class="col">
-                                @foreach (var img in chunks[1])
-                                {
-                                    <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
-                                }
-                            </div>
-                            <div class="col">
-                                @foreach (var img in chunks[2])
-                                {
-                                    <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            @foreach (var img in favorites)
-                            {
-                                <a href="" @onclick="() => { ImageUrl = img; HistoryToFavorite(); ToggleFavoriteView(); }"><img class="img-fluid" src="@img" style="box-shadow: 0px 0px 15px 10px; max-height: 100vh;"></a>
-                            }
                         }
                     }
                 </div>
             </div><!-- End: 1 Row 3 Columns -->
         </div>
-        <!-- Start: Footer Dark -->
-        <footer class="footer-dark">
-            <div class="container">
-                <div class="row">
-                    <!-- Start: Social Icons -->
-                    <div class="col item social"><a href="https://github.com/MarkenJaden/Nekos" target="_blank"><i class="icon ion-social-github"></i></a></div><!-- End: Social Icons -->
-                </div><!-- Start: Copyright -->
-                <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed. Favorites are saved as link as cookie in local storage. API used: https://nekosapi.com/</p><!-- End: Copyright -->
-            </div>
-        </footer>
-        <!-- End: Footer Dark -->
         <nav class="navbar navbar-light navbar-expand fixed-bottom">
             <div class="container-fluid">
                 <div class="row mt-auto">
@@ -111,6 +73,17 @@
             </div>
         </nav>
     }
+    <!-- Start: Footer Dark -->
+    <footer class="footer-dark">
+        <div class="container">
+            <div class="row">
+                <!-- Start: Social Icons -->
+                <div class="col item social"><a href="https://github.com/MarkenJaden/Nekos" target="_blank"><i class="icon ion-social-github"></i></a></div><!-- End: Social Icons -->
+            </div><!-- Start: Copyright -->
+            <p class="copyright">MarkenJaden | Nekos © @DateTime.Now.Year -&nbsp;I do not own or save any of the images displayed. Favorites are saved as link as cookie in local storage. API used: https://nekosapi.com/</p><!-- End: Copyright -->
+        </div>
+    </footer>
+    <!-- End: Footer Dark -->
 </div>
 
 @code
@@ -118,77 +91,116 @@
     /// <summary>
     /// The URL of the main image displayed on the page
     /// </summary>
-    public string ImageUrl = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
+    public LinkedListNode<ImageSchema>? Image;
 
     /// <summary>
-    /// The URL of a pre-loaded image displayed on the page
+    /// The URL of a preloaded image displayed on the page
     /// </summary>
-    public string PreloadImageUrl1 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
+    public LinkedListNode<ImageSchema>? PreloadImageUrl1;
 
     /// <summary>
-    /// The URL of a second pre-loaded image displayed on the page
+    /// The URL of a second preloaded image displayed on the page
     /// </summary>
-    public string PreloadImageUrl2 = "https://media.giphy.com/media/wnYB3vx9t6PXiq1ubB/giphy.gif";
+    public LinkedListNode<ImageSchema>? PreloadImageUrl2;
 
-    private RandomNekoClient NekoClient = new(new HttpClient());
+    private readonly RandomNekoClient _nekoClient = new(new HttpClient());
 
-    private LinkedList<string> History = [];
+    private readonly LinkedList<ImageSchema> _images = [];
 
     /// <summary>
     /// The reference to the HTML element that contains the image
     /// </summary>
     protected ElementReference Div;  // set by the @ref attribute
 
-    private readonly string copied = "Copied image link to clipboard ";
-
-    /// <summary>
-    /// A string indicating the type of device used to access the page (e.g. "Desktop", "Mobile")
-    /// </summary>
-    private string isDevice { get; set; } = "Desktop";
+    private const string Copied = "Copied image link to clipboard ";
 
     /// <summary>
     /// A boolean indicating whether the page is being accessed on a mobile device
     /// </summary>
-    private bool mobile { get; set; } = true;
+    private bool Mobile { get; set; } = true;
 
-    private bool keyBoardUsed;
+    private bool _keyBoardUsed;
 
-    private bool clipboardSupported;
+    private bool _clipboardSupported;
 
     /// <summary>
     /// A list of image links that the user has marked as favorites
     /// </summary>
-    private List<string>? favorites = [];
+    private List<ImageSchema>? _favorites = [];
 
     /// <summary>
     /// A boolean indicating whether the "favorites" section of the page should be displayed
     /// </summary>
-    private bool showFavorites;
+    private bool _showFavorites;
+
+    private JsConsole _console = null!;
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            clipboardSupported = await clipboard.IsSupportedAsync();
-            mobile = await _js.InvokeAsync<bool>("isDevice");
-            isDevice = mobile ? "Mobile" : "Desktop";
+            _console = new JsConsole(Js);
+            _clipboardSupported = await Clipboard.IsSupportedAsync();
+            Mobile = await Js.InvokeAsync<bool>("isDevice");
 
-            StateHasChanged();
+            await LoadImages();
+            Image = _images.First;
+            await _console.LogAsync($"Current image ID: {Image!.Value.Id}");
 
-            var images = await NekoClient.ImagesAsync(rating: ["explicit"], tag: [8], limit: 3);
-            ImageUrl = images.Items.ElementAt(0).Image_url;
-            PreloadImageUrl1 = images.Items.ElementAt(1).Image_url;
-            PreloadImageUrl2 = images.Items.ElementAt(2).Image_url;
-
-            History.AddLast(ImageUrl);
-
-            await _js.InvokeVoidAsync("SetFocusToElement", Div);
+            await Js.InvokeVoidAsync("SetFocusToElement", Div);
         }
 
-        if (!await _localStorage.ContainKeyAsync("favorites")) await _localStorage.SetItemAsync("favorites", favorites);
-        favorites = await _localStorage.GetItemAsync<List<string>>("favorites");
+        try
+        {
+            if (!await LocalStorage.ContainKeyAsync("favorites")) await LocalStorage.SetItemAsync("favorites", _favorites);
+            _favorites = await LocalStorage.GetItemAsync<List<ImageSchema>>("favorites");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            await LocalStorage.RemoveItemAsync("favorites");
+            await LocalStorage.SetItemAsync("favorites", _favorites);
+        }
+
         StateHasChanged();
+    }
+
+    private async Task Next()
+    {
+        Image = Image?.Next;
+        StateHasChanged();
+        if (Image != null)
+        {
+            PreloadImageUrl1 = Image.Next;
+            PreloadImageUrl2 = PreloadImageUrl1!.Next;
+            StateHasChanged();
+            await _console.LogAsync($"Current image ID: {Image.Value.Id}");
+            if (Image != null && _images.Count - _images.FindIndex(x => x.Equals(Image.Value)) < 20)
+            {
+                await LoadImages();
+            }
+        }
+    }
+
+    private async void Previous()
+    {
+        var previous = Image?.Previous;
+        if (previous != null) Image = previous;
+        StateHasChanged();
+        if (Image != null) await _console.LogAsync($"Current image ID: {Image.Value.Id}");
+    }
+
+    private async Task LoadImages()
+    {
+        await _console.LogAsync("Loading new images in queue...");
+        var images = await _nekoClient.ImagesAsync(rating: ["explicit"], tag: [8], limit: 25);
+        foreach (var image in images.Items)
+        {
+            if (!_images.Any(x => x.Id.Equals(image.Id)))
+                _images.AddLast(image);
+        }
+        await _console.LogAsync("Image loading finished.");
     }
 
     /// <summary>
@@ -197,12 +209,14 @@
     /// <param name="e">The keyboard event arguments.</param>
     protected void KeyDown(KeyboardEventArgs e)
     {
-        if (showFavorites) return;
+        if (_showFavorites) return;
         switch (e.Key)
         {
             case "ArrowRight":
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 Next();
-                keyBoardUsed = true;
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                _keyBoardUsed = true;
                 break;
             case "ArrowLeft":
                 Previous();
@@ -210,110 +224,81 @@
         }
     }
 
-    /// <summary>
-    /// Moves to the next image in the collection, or loads a new one if none are available.
-    /// </summary>
-    private async void Next()
-    {
-        if (!History.Any())
-        {
-            await _message.Error("Something went wrong! Try again later. It will probably take a few hours.");
-            return;
-        }
-
-        if (History.Last!.Value.Equals(ImageUrl))
-        {
-            ImageUrl = PreloadImageUrl1;
-            StateHasChanged();
-            History.AddLast(ImageUrl);
-
-            PreloadImageUrl1 = PreloadImageUrl2;
-            do
-            {
-                var t = await NekoClient.ImagesAsync(rating: ["explicit"], tag: [8], limit: 1);
-                PreloadImageUrl2 = t.Items.First().Image_url;
-            } while (PreloadImageUrl1 == null || History.Contains(PreloadImageUrl2) || PreloadImageUrl1.Equals(PreloadImageUrl2));
-        }
-        else
-        {
-            ImageUrl = History.Find(ImageUrl)!.Next!.Value;
-        }
-    }
-
-    private async void Previous()
-    {
-        if (!History.Any())
-        {
-            await _message.Error("Something went wrong! Try again later. It will probably take a few hours.");
-            return;
-        }
-
-        var linkedListNode = History.Find(ImageUrl)!.Previous;
-        if (linkedListNode != null) ImageUrl = linkedListNode.Value;
-    }
-
     private async Task ToggleFavorite()
     {
-        if (favorites.Contains(ImageUrl)) favorites.Remove(ImageUrl);
-        else favorites.Add(ImageUrl);
-        await _localStorage.SetItemAsync("favorites", favorites);
+        if (Image != null)
+        {
+            if (_favorites != null && _favorites.Exists(x => x == Image?.Value))
+            {
+                _favorites.Remove(Image.Value);
+            }
+            else
+            {
+                _favorites?.Add(Image.Value);
+            }
+        }
+
+        await LocalStorage.SetItemAsync("favorites", _favorites);
         StateHasChanged();
     }
 
     private async Task ToggleFavoriteView()
     {
-        showFavorites = !showFavorites;
-        if (!showFavorites) await _js.InvokeVoidAsync("SetFocusToElement", Div);
+        _showFavorites = !_showFavorites;
+        if (!_showFavorites) await Js.InvokeVoidAsync("SetFocusToElement", Div);
     }
 
-    private void HistoryToFavorite()
+    private async Task HistoryToFavorite(ImageSchema showImage)
     {
-        History.Clear();
-        foreach (var favorite in favorites)
-        {
-            History.AddLast(favorite);
-        }
+        await _console.LogAsync("Overwrite history with favourites...");
+        _images.Clear();
+        if (_favorites == null) return;
+        foreach (var favorite in _favorites) _images.AddLast(favorite);
+        Image = _images.Find(_images.First(x => x.Id.Equals(showImage.Id)));
+        StateHasChanged();
+        await _console.LogAsync($"Overwrite complete. Current image ID: {Image!.Value.Id}");
+        await LoadImages();
     }
 
     //Swipe event
-    (TouchPoint ReferencePoint, DateTime StartTime) startPoint;
+    (TouchPoint ReferencePoint, DateTime StartTime) _startPoint;
 
     void HandleTouchStart(TouchEventArgs t)
     {
-        if (showFavorites) return;
-        startPoint.ReferencePoint = t.TargetTouches[0];
-        startPoint.StartTime = DateTime.Now;
+        if (_showFavorites) return;
+        _startPoint.ReferencePoint = t.TargetTouches[0];
+        _startPoint.StartTime = DateTime.Now;
     }
 
     void HandleTouchEnd(TouchEventArgs t)
     {
-        if (showFavorites) return;
+        if (_showFavorites) return;
         const double swipeThreshold = 0.4;
         try
         {
             var endReferencePoint = t.ChangedTouches[0];
 
-            var diffX = startPoint.ReferencePoint.ClientX - endReferencePoint.ClientX;
-            var diffY = startPoint.ReferencePoint.ClientY - endReferencePoint.ClientY;
-            var diffTime = DateTime.Now - startPoint.StartTime;
+            var diffX = _startPoint.ReferencePoint.ClientX - endReferencePoint.ClientX;
+            var diffY = _startPoint.ReferencePoint.ClientY - endReferencePoint.ClientY;
+            var diffTime = DateTime.Now - _startPoint.StartTime;
             var velocityX = Math.Abs(diffX / diffTime.Milliseconds);
             var velocityY = Math.Abs(diffY / diffTime.Milliseconds);
 
             if (velocityX < swipeThreshold && velocityY < swipeThreshold) return;
             if (Math.Abs(velocityX - velocityY) < .5) return;
 
-            if (velocityX >= swipeThreshold)
+            if (!(velocityX >= swipeThreshold)) return;
+            if (diffX < 0)
             {
-                if (diffX < 0)
-                {
-                    //Right
-                    Previous();
-                }
-                else
-                {
-                    //Left
-                    Next();
-                }
+                //Right
+                Previous();
+            }
+            else
+            {
+                //Left
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                Next();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             //if (velocityY >= swipeThreshold)
             //{
