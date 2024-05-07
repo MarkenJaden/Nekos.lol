@@ -4,23 +4,23 @@
 [![wakatime](https://wakatime.com/badge/user/17f322c9-222a-48b4-9e15-983c41f7aed4/project/d3a3b200-4514-4fa7-a958-9f5914af1406.svg)](https://wakatime.com/badge/user/17f322c9-222a-48b4-9e15-983c41f7aed4/project/d3a3b200-4514-4fa7-a958-9f5914af1406)
 
 #### https://nekos.lol/
-Website providing you with random lewd nsfw neko pics using [Nekos.Fun API](https://github.com/MarkenJaden/Nekos.Fun.NET)
+Website providing you with random lewd nsfw neko pics using [NekosAPI.NET](https://github.com/MarkenJaden/NekosAPI.NET)
 
 ## Developement
 
 #### I appreciate any contribution to the website! If you have an idea, implement it or ask me to do it! ^^
 
-This website was created using [Blazor Server](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) in [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+This website was created using [Blazor Server](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) in [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 
 ### Libraries used
-* [Nekos.Fun.NET](https://github.com/MarkenJaden/Nekos.Fun.NET)
+* [NekosAPI.NET](https://github.com/MarkenJaden/NekosAPI.NET)
 * [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
 * [CurrieTechnologies.Razor.Clipboard](https://github.com/Basaingeal/Razor.Clipboard)
 * [AntDesign](https://github.com/ant-design-blazor/ant-design-blazor)
 
 ### For the development you need
 * [.NET IDE](https://dotnet.microsoft.com/en-us/platform/tools)
-* [.NET 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+* [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 Clone the repo into your IDE. Make sure that all libraries are downloaded. Now you should already be able to start the website locally.
 
