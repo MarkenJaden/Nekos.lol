@@ -6,7 +6,6 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject ClipboardService Clipboard
 @inject MessageService Message
-@inject NekosAPI.NET.V3.NekosClient NekosClient
 
 <div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700); height: auto;">
     @if (!_showFavorites)
@@ -106,6 +105,7 @@
     public LinkedListNode<ImageSchema>? PreloadImageUrl2;
 
     private readonly RandomNekoClient _nekoClient = new(new HttpClient());
+    private readonly ApiNekoClient _apiClient = new(new HttpClient());
 
     private readonly LinkedList<ImageSchema> _images = [];
 
@@ -141,11 +141,11 @@
 
     private List<string> _selectedTags = new();
 
-    private List<string> _availableTags = new();
+    private PagedTagSchema _availableTags = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _availableTags = await NekosClient.TagsAsync();
+        _availableTags = await _apiClient.TagsAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
