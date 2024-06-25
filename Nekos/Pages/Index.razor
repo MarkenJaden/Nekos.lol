@@ -33,6 +33,7 @@
                         {
                             <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => { if (Image != null) await Clipboard.WriteTextAsync(Image.Value.Image_url); await Message.Success(Copied + await GetAsciiNeko()); }"><i class="far fa-copy"></i></button>
                         }
+                        <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="ToggleTagFilterMenu"><i class="fas fa-filter"></i></button>
                     </div>
                 </div>
                 @if (!Mobile && !_keyBoardUsed)
@@ -104,6 +105,7 @@
     public LinkedListNode<ImageSchema>? PreloadImageUrl2;
 
     private readonly RandomNekoClient _nekoClient = new(new HttpClient());
+    private readonly ApiNekoClient _apiClient = new(new HttpClient());
 
     private readonly LinkedList<ImageSchema> _images = [];
 
@@ -135,6 +137,16 @@
 
     private JsConsole _console = null!;
 
+    private bool _showTagFilterMenu;
+
+    private List<int> _selectedTags = new();
+
+    private PagedTagSchema _availableTags = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _availableTags = await _apiClient.TagsAsync();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -191,7 +203,7 @@
     private async Task LoadImages()
     {
         await _console.LogAsync("Loading new images in queue...");
-        var images = await _nekoClient.ImagesAsync(rating: ["explicit"], tag: [8], is_screenshot:false);
+        var images = await _nekoClient.ImagesAsync(rating: ["explicit"], tag: _selectedTags, is_screenshot:false);
         foreach (var image in images.Items) if (!_images.Any(x => x.Id.Equals(image.Id))) _images.AddLast(image);
         await _console.LogAsync($"Image loading finished. Total images in list: {_images.Count}");
     }
@@ -202,7 +214,7 @@
     /// <param name="e">The keyboard event arguments.</param>
     protected void KeyDown(KeyboardEventArgs e)
     {
-        if (_showFavorites) return;
+        if (_showFavorites || _showTagFilterMenu) return;
         switch (e.Key)
         {
             case "ArrowRight":
@@ -253,19 +265,25 @@
         await LoadImages();
     }
 
+    private void ToggleTagFilterMenu()
+    {
+        _showTagFilterMenu = !_showTagFilterMenu;
+        StateHasChanged();
+    }
+
     //Swipe event
     (TouchPoint ReferencePoint, DateTime StartTime) _startPoint;
 
     void HandleTouchStart(TouchEventArgs t)
     {
-        if (_showFavorites) return;
+        if (_showFavorites || _showTagFilterMenu) return;
         _startPoint.ReferencePoint = t.TargetTouches[0];
         _startPoint.StartTime = DateTime.Now;
     }
 
     void HandleTouchEnd(TouchEventArgs t)
     {
-        if (_showFavorites) return;
+        if (_showFavorites || _showTagFilterMenu) return;
         const double swipeThreshold = 0.4;
         try
         {
