@@ -6,6 +6,7 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject ClipboardService Clipboard
 @inject MessageService Message
+@inject NekosAPI.NET.V3.NekosClient NekosClient
 
 <div class="text-center" id="wrapper" tabindex="0" @onkeydown="KeyDown" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd" @ref="Div" style="background: var(--bs-gray-700); height: auto;">
     @if (!_showFavorites)
@@ -33,6 +34,7 @@
                         {
                             <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="async () => { if (Image != null) await Clipboard.WriteTextAsync(Image.Value.Image_url); await Message.Success(Copied + await GetAsciiNeko()); }"><i class="far fa-copy"></i></button>
                         }
+                        <button class="btn btn-outline-light btn-lg border rounded-circle mt-auto" type="button" style="margin-left: 10px; height: 56.5px;" @onclick="ToggleTagFilterMenu"><i class="fas fa-filter"></i></button>
                     </div>
                 </div>
                 @if (!Mobile && !_keyBoardUsed)
@@ -135,6 +137,16 @@
 
     private JsConsole _console = null!;
 
+    private bool _showTagFilterMenu;
+
+    private List<string> _selectedTags = new();
+
+    private List<string> _availableTags = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _availableTags = await NekosClient.TagsAsync();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -191,7 +203,7 @@
     private async Task LoadImages()
     {
         await _console.LogAsync("Loading new images in queue...");
-        var images = await _nekoClient.ImagesAsync(rating: ["explicit"], tag: [8], is_screenshot:false);
+        var images = await _nekoClient.ImagesAsync(rating: ["explicit"], tag: _selectedTags, is_screenshot:false);
         foreach (var image in images.Items) if (!_images.Any(x => x.Id.Equals(image.Id))) _images.AddLast(image);
         await _console.LogAsync($"Image loading finished. Total images in list: {_images.Count}");
     }
@@ -202,7 +214,7 @@
     /// <param name="e">The keyboard event arguments.</param>
     protected void KeyDown(KeyboardEventArgs e)
     {
-        if (_showFavorites) return;
+        if (_showFavorites || _showTagFilterMenu) return;
         switch (e.Key)
         {
             case "ArrowRight":
@@ -253,19 +265,25 @@
         await LoadImages();
     }
 
+    private void ToggleTagFilterMenu()
+    {
+        _showTagFilterMenu = !_showTagFilterMenu;
+        StateHasChanged();
+    }
+
     //Swipe event
     (TouchPoint ReferencePoint, DateTime StartTime) _startPoint;
 
     void HandleTouchStart(TouchEventArgs t)
     {
-        if (_showFavorites) return;
+        if (_showFavorites || _showTagFilterMenu) return;
         _startPoint.ReferencePoint = t.TargetTouches[0];
         _startPoint.StartTime = DateTime.Now;
     }
 
     void HandleTouchEnd(TouchEventArgs t)
     {
-        if (_showFavorites) return;
+        if (_showFavorites || _showTagFilterMenu) return;
         const double swipeThreshold = 0.4;
         try
         {
