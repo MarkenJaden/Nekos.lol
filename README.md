@@ -20,7 +20,7 @@ This website was created using [Blazor Server](https://dotnet.microsoft.com/en-u
 
 ### For the development you need
 * [.NET IDE](https://dotnet.microsoft.com/en-us/platform/tools)
-* [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+* [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 Clone the repo into your IDE. Make sure that all libraries are downloaded. Now you should already be able to start the website locally.
 
@@ -34,4 +34,4 @@ Once you're happy with your change you can just open a pull request, I'll take a
 
 ## Legal
 
-I **do not** own or save any of the images displayed. All images are retrieved and displayed using the [Nekos.Fun API](https://nekos.fun/).
+I **do not** own or save any of the images displayed. All images are retrieved and displayed using the [NekosAPI.NET](https://github.com/MarkenJaden/NekosAPI.NET).
